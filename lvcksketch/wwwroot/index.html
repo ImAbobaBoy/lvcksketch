@@ -4,80 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Онлайн Рисовалка</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #222;
-        }
-        canvas {
-            border: 1px solid #444;
-            background-color: #fff;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div id="controls">
+</div>
 <canvas id="c" width="800" height="600"></canvas>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
-<script>
-    const canvas = document.getElementById("c");
-    const ctx = canvas.getContext("2d");
-
-    let drawing = false;
-    let last = null;
-
-    const conn = new signalR.HubConnectionBuilder()
-        .withUrl("/draw")
-        .build();
-
-    // теперь принимаем camelCase свойства
-    conn.on("ReceiveStroke", s => {
-        drawLine(s.x1, s.y1, s.x2, s.y2, "yellow", 10);
-    });
-
-    conn.start().catch(err => console.error(err.toString()));
-
-    canvas.onmousedown = e => { drawing = true; last = pos(e); };
-    canvas.onmouseup   = () => drawing = false;
-    canvas.onmousemove = e => {
-        if (!drawing) return;
-
-        const p = pos(e);
-        const stroke = {
-            x1: last.x,
-            y1: last.y,
-            x2: p.x,
-            y2: p.y,
-            color: "black",
-            width: 2
-        };
-
-        drawLine(stroke.x1, stroke.y1, stroke.x2, stroke.y2, stroke.color, stroke.width);
-
-        // вызываем метод хаба на сервере
-        conn.invoke("SendStroke", { x1: stroke.x1, y1: stroke.y1, x2: stroke.x2, y2: stroke.y2 })
-            .catch(err => console.error(err.toString()));
-
-        last = p;
-    };
-
-    function pos(e) {
-        const r = canvas.getBoundingClientRect();
-        return { x: e.clientX - r.left, y: e.clientY - r.top };
-    }
-
-    function drawLine(x1, y1, x2, y2, color, width) {
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-    }
-</script>
+<script src="script.js"></script>
 </body>
 </html>

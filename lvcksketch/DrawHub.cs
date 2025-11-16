@@ -1,17 +1,17 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
 
 namespace lvcksketch;
 
 public class DrawHub : Hub
 {
-    public async Task SendStroke(StrokeDto stroke)
+    private static readonly Dictionary<string, string> _currentStrategies = new();
+    
+    public async Task SendPing(PingDto ping)
     {
-        // отправляем всем, кроме отправителя
-        await Clients.Others.SendAsync("ReceiveStroke", stroke);
+        await Clients.Others.SendAsync("ReceivePing", ping);
     }
 }
 
-public record StringDto(string s1, string s2);
-public record StrokeDto(double x1, double y1, double x2, double y2);
+public record PingDto(double x, double y, string color);
 

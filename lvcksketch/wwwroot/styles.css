@@ -1,0 +1,18 @@
+﻿body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    background-color: #222;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+#controls {
+    margin: 10px;
+}
+
+canvas {
+    border: 1px solid #444;
+    background-color: #fff;
+}
